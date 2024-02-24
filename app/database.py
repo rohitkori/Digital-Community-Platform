@@ -14,3 +14,5 @@ except Exception:
 db = client[settings.MONGO_INITDB_DATABASE]
 User = db.users
 User.create_index([("email", pymongo.ASCENDING)], unique=True)
+CommunityManager = db.community_managers
+CommunityManager.create_index([("email", pymongo.ASCENDING)], unique=True)

@@ -45,3 +45,29 @@ def embeddedUserResponse(user) -> dict:
 
 def userListEntity(users) -> list:
     return [userEntity(user) for user in users]
+
+def communityManagerEntity(user) -> dict:
+    return {
+        "id": str(user["_id"]),
+        "name": user["name"],
+        "email": user["email"],
+        "city": user["city"],
+        "contact": user["contact"],
+        "quest_openning_applications": user["quest_openning_applications"],
+        "password": user["password"],
+        "passwordConfirm": user["passwordConfirm"],
+        "created_at": user["created_at"],
+        "updated_at": user["updated_at"]
+    }
+
+def communityManagerResponseEntity(user) -> dict:
+    return {
+        "id": str(user["_id"]),
+        "name": user["name"],
+        "email": user["email"],
+        "city": user["city"],
+        "contact": user["contact"],
+        "quest_openning_applications": user["quest_openning_applications"],
+        "created_at": user["created_at"],
+        "updated_at": user["updated_at"]
+    }

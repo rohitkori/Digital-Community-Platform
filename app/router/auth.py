@@ -3,8 +3,9 @@ from bson.objectid import ObjectId
 from fastapi import APIRouter, Response, status, Depends, HTTPException
 
 from app import oauth2
-from app.database import User
-from app.serializers.userSerializers import userEntity, userResponseEntity, userListEntity
+from app.database import User, CommunityManager
+from app.serializers.userSerializers import (userEntity, userResponseEntity, userListEntity, 
+                                             communityManagerEntity, communityManagerResponseEntity)
 from .. import schemas, utils
 from app.oauth2 import AuthJWT
 from ..config import settings
@@ -15,6 +16,28 @@ ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
 REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
 
 # [...] imports
+
+@router.post('/community-manager', status_code=status.HTTP_201_CREATED )
+async def create_community_manager(payload: schemas.CommunityManagerSchema):
+    # Check if user already exist
+    community_manager = CommunityManager.find_one({'email': payload.email.lower()})
+    if community_manager:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail='Account already exist')
+    # Compare password and passwordConfirm
+    if payload.password != payload.passwordConfirm:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail='Passwords do not match')
+    #  Hash the password
+    payload.password = utils.hash_password(payload.password)
+    del payload.passwordConfirm
+    payload.email = payload.email.lower()
+    payload.created_at = datetime.utcnow()
+    payload.updated_at = payload.created_at
+    result = CommunityManager.insert_one(payload.dict())
+    new_community_manager = communityManagerResponseEntity(
+        CommunityManager.find_one({'_id': result.inserted_id}))
+    return {"status": "success", "user": new_community_manager}
 
 # [...] register user
 @router.post('/register', status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
