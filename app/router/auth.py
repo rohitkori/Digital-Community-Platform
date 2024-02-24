@@ -4,7 +4,7 @@ from fastapi import APIRouter, Response, status, Depends, HTTPException
 
 from app import oauth2
 from app.database import User
-from app.serializers.userSerializers import userEntity, userResponseEntity
+from app.serializers.userSerializers import userEntity, userResponseEntity, userListEntity
 from .. import schemas, utils
 from app.oauth2 import AuthJWT
 from ..config import settings
@@ -31,7 +31,7 @@ async def create_user(payload: schemas.CreateUserSchema):
     #  Hash the password
     payload.password = utils.hash_password(payload.password)
     del payload.passwordConfirm
-    payload.role = 'user'
+    # payload.role = 'user'
     payload.verified = True
     payload.email = payload.email.lower()
     payload.created_at = datetime.utcnow()
@@ -40,6 +40,13 @@ async def create_user(payload: schemas.CreateUserSchema):
     new_user = userResponseEntity(User.find_one({'_id': result.inserted_id}))
     return {"status": "success", "user": new_user}
 
+
+@router.get('/users', status_code=status.HTTP_200_OK)
+async def get_users():
+    users = User.find()
+    list_users = userListEntity(users)
+    # print(list_users)
+    return {"status": "success", "users": list_users}
 
 # [...] imports
 # [...] register user
