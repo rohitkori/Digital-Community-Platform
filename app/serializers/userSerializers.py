@@ -3,8 +3,14 @@ def userEntity(user) -> dict:
         "id": str(user["_id"]),
         "name": user["name"],
         "email": user["email"],
-        "role": user["role"],
-        "photo": user["photo"],
+        "city": user["city"],
+        "dob": user["dob"],
+        "contact": user["contact"],
+        # "role": user["role"],
+        # "photo": user["photo"],
+        "specializations": user["specializations"],
+        "completed_quests": user["completed_quests"],
+        "contribution_points": user["contribution_points"],
         "verified": user["verified"],
         "password": user["password"],
         "created_at": user["created_at"],
@@ -17,8 +23,14 @@ def userResponseEntity(user) -> dict:
         "id": str(user["_id"]),
         "name": user["name"],
         "email": user["email"],
-        "role": user["role"],
-        "photo": user["photo"],
+        "city": user["city"],
+        "dob": user["dob"],
+        "contact": user["contact"],
+        # "role": user["role"],
+        # "photo": user["photo"],
+        "specializations": user["specializations"],
+        "completed_quests": user["completed_quests"],
+        "contribution_points": user["contribution_points"],
         "created_at": user["created_at"],
         "updated_at": user["updated_at"]
     }
@@ -28,7 +40,7 @@ def embeddedUserResponse(user) -> dict:
         "id": str(user["_id"]),
         "name": user["name"],
         "email": user["email"],
-        "photo": user["photo"]
+        # "photo": user["photo"]
     }
 
 def userListEntity(users) -> list:

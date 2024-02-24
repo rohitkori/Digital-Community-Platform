@@ -1,30 +1,32 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, constr
-from typing import Optional
+from typing import Optional, List
 
 class UserBaseSchema(BaseModel):
     name: str
     email: str
-    photo: str
-    # declare role as optional
-    role: Optional[str] = None
-    # role: str | None = None # this is generating error
+    # photo: Optional[str] = None
+    city: Optional[str] = None
+    dob: Optional[datetime] = None
+    contact: Optional[str] = None
+    # specializations is a list of strings
+    specializations: Optional[List[str]] = None
+    completed_quests: Optional[List[str]] = None
+    contribution_points: Optional[str] = None
     created_at: Optional[datetime] = None
-    # created_at: datetime | None = None
     updated_at: Optional[datetime] = None
-    # updated_at: datetime | None = None
 
     class Config:
         orm_mode = True
 
 class CreateUserSchema(UserBaseSchema):
-    password: constr(min_length=8)
+    password: constr(min_length=1)
     passwordConfirm: str
     verified: bool = False
 
 class LoginUserSchema(BaseModel):
     email: EmailStr
-    password: constr(min_length=8)
+    password: constr(min_length=1)
 
 class UserResponseSchema(UserBaseSchema):
     id: str
