@@ -39,3 +39,6 @@ def questCreationSerializer(data) -> dict:
 
 def questRequestListSerializer(requests) -> list:
     return [questRequestSerializer(request) for request in requests]
+
+def questListSerializer(quests) -> list:
+    return [questCreationSerializer(quest) for quest in quests]

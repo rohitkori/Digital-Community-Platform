@@ -4,7 +4,7 @@ from fastapi import APIRouter, Response, status, HTTPException
 from app.database import CommunityManager, User, Quest
 from app.serializers.userSerializers import (communityManagerListEntity, communityManagerResponseEntity)
 from app.serializers.questSerializers import (questCreationSerializer, 
-                                              questRequestListSerializer , questRequestSerializer)
+                                              questRequestListSerializer , questListSerializer)
 
 from .. import schemas
 from datetime import datetime
@@ -52,3 +52,11 @@ async def create_quest(payload: schemas.QuestCreationSchema, email: str):
     new_quest = questCreationSerializer(Quest.find_one({'_id': result.inserted_id}))
 
     return {"status": "success", "quest": new_quest}
+
+
+@router.get('/quests', status_code=status.HTTP_200_OK)
+async def get_quests():
+    quests = Quest.find()
+    list_quests = questListSerializer(quests)
+    
+    return {"status": "success", "quests": list_quests}
