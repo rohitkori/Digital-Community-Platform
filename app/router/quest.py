@@ -1,5 +1,6 @@
 # from bson.objectid import ObjectId
 from fastapi import APIRouter, Response, status, HTTPException
+from bson.objectid import ObjectId
 
 from app.database import CommunityManager, User, Quest
 from app.serializers.userSerializers import (communityManagerListEntity, communityManagerResponseEntity)
@@ -58,5 +59,26 @@ async def create_quest(payload: schemas.QuestCreationSchema, email: str):
 async def get_quests():
     quests = Quest.find()
     list_quests = questListSerializer(quests)
-    
+
     return {"status": "success", "quests": list_quests}
+
+
+@router.get('/apply-in-quest', status_code=status.HTTP_200_OK)
+async def apply_in_quest(id: str, email: str):
+    quest = Quest.find_one({'_id': ObjectId(id)})
+    user = User.find_one({'email': email.lower()})
+    if not quest:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Quest not found')
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    
+    filter_query = {"_id": ObjectId(id)}
+    upate_applications = {
+        "$push": {
+            "pending_applications": user['email']
+        }
+    }
+    Quest.update_one(filter_query, upate_applications)
+
+    return {"message": "Application submitted successfully"}
