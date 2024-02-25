@@ -75,3 +75,11 @@ class QuestCreationSchema(BaseModel):
     rejected_applications: Optional[List[str]] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+class QuestResponseSchema(QuestCreationSchema):
+    id: str
+    pass
+
+class QuestResponse(BaseModel):
+    # status: str
+    quest: QuestResponseSchema
