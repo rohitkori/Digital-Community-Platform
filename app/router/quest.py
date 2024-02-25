@@ -82,3 +82,57 @@ async def apply_in_quest(id: str, email: str):
     Quest.update_one(filter_query, upate_applications)
 
     return {"message": "Application submitted successfully"}
+
+@router.get('/review-applications', status_code=status.HTTP_200_OK)
+async def review_applications(id: str):
+    quest = Quest.find_one({'_id': ObjectId(id)})
+    if not quest:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Quest not found')
+    
+    return {"status": "success", "quest": quest}
+
+@router.post('/accept-application', status_code=status.HTTP_200_OK)
+async def accept_application(id: str, email: str):
+    quest = Quest.find_one({'_id': ObjectId(id)})
+    if not quest:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Quest not found')
+    
+    if email.lower() not in quest['pending_applications']:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Application not found')
+
+    filter_query = {"_id": ObjectId(id)}
+    
+    update_operation = {
+        "$pull": {
+            "pending_applications": email.lower()
+        },
+        "$push": {
+            "accepted_applications": email.lower()
+        }
+    }
+    Quest.update_one(filter_query, update_operation)
+
+    return {"message": "Application accepted successfully"}
+
+@router.post('/reject-application', status_code=status.HTTP_200_OK)
+async def reject_application(id: str, email: str):
+    quest = Quest.find_one({'_id': ObjectId(id)})
+    if not quest:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Quest not found')
+    
+    if email.lower() not in quest['pending_applications']:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Application not found')
+    
+    filter_query = {"_id": ObjectId(id)}
+    
+    update_operation = {
+        "$pull": {
+            "pending_applications": email.lower()
+        },
+        "$push": {
+            "rejected_applications": email.lower()
+        }
+    }
+    Quest.update_one(filter_query, update_operation)
+
+    return {"message": "Application rejected successfully"}
