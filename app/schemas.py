@@ -42,3 +42,36 @@ class UserResponseSchema(UserBaseSchema):
 class UserResponse(BaseModel):
     status: str
     user: UserResponseSchema
+
+class QuestRequestSchema(BaseModel):
+    title: str
+    description: Optional[str] = None
+    start_date: datetime
+    end_date: datetime
+    city: str
+    leisure_activity: Optional[List[str]] = None
+    local_events: Optional[List[str]] = None
+    rewards: str
+    points: str
+    total_required: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    created_by: str
+
+class QuestCreationSchema(BaseModel):
+    title: str
+    description: Optional[str] = None
+    start_date: datetime
+    end_date: datetime
+    city: str
+    leisure_activity: Optional[List[str]] = None
+    local_events: Optional[List[str]] = None
+    rewards: str
+    points: str
+    community_manager: str
+    total_required: int
+    pending_applications: Optional[List[str]] = None
+    accepted_applications: Optional[List[str]] = None
+    rejected_applications: Optional[List[str]] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
