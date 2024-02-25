@@ -5,7 +5,7 @@ from fastapi import APIRouter, Response, status, Depends, HTTPException
 from app import oauth2
 from app.database import User, CommunityManager
 from app.serializers.userSerializers import (userEntity, userResponseEntity, userListEntity, 
-                                             communityManagerEntity, communityManagerResponseEntity)
+                                             communityManagerListEntity, communityManagerEntity, communityManagerResponseEntity)
 from .. import schemas, utils
 from app.oauth2 import AuthJWT
 from ..config import settings
@@ -16,6 +16,13 @@ ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
 REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
 
 # [...] imports
+
+@router.get('/community-managers', status_code=status.HTTP_200_OK)
+async def get_community_managers():
+    community_managers = CommunityManager.find()
+    list_community_managers = communityManagerListEntity(community_managers)
+    return {"status": "success", "community_managers": list_community_managers}
+
 
 @router.post('/community-manager', status_code=status.HTTP_201_CREATED )
 async def create_community_manager(payload: schemas.CommunityManagerSchema):

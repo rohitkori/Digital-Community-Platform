@@ -44,7 +44,7 @@ def embeddedUserResponse(user) -> dict:
     }
 
 def userListEntity(users) -> list:
-    return [userEntity(user) for user in users]
+    return [userResponseEntity(user) for user in users]
 
 def communityManagerEntity(user) -> dict:
     return {
@@ -71,3 +71,6 @@ def communityManagerResponseEntity(user) -> dict:
         "created_at": user["created_at"],
         "updated_at": user["updated_at"]
     }
+
+def communityManagerListEntity(users) -> list:
+    return [communityManagerResponseEntity(user) for user in users]
