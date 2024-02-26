@@ -28,23 +28,19 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </Box>
   );
 }
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [tab, setTab] = useState(0);
@@ -57,16 +53,14 @@ const Dashboard = (props) => {
     setTab(newValue);
   };
   const handleDrawerClose = () => {
-    setIsClosing(true);
+    // setIsClosing(true);
     setMobileOpen(false);
   };
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
+  // const handleDrawerTransitionEnd = () => {
+  //   setIsClosing(false);
+  // };
   const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
+    setMobileOpen(!mobileOpen);
   };
 
   function a11yProps(index) {
@@ -201,19 +195,22 @@ const Dashboard = (props) => {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Box component="nav" aria-label="mailbox folders">
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
+        >
           {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-
           <Drawer
-            variant="permanent"
+            variant="temporary"
             open={mobileOpen}
-            onTransitionEnd={handleDrawerTransitionEnd}
+            // onTransitionEnd={handleDrawerTransitionEnd}
             onClose={handleDrawerClose}
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              display: { xs: "none", sm: "block" },
+              display: { xs: "block", sm: "none" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
@@ -222,12 +219,27 @@ const Dashboard = (props) => {
           >
             {drawer}
           </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
         </Box>
         <Box
           component="main"
-          //   sx={{
-          //     width: "100%",
-          //   }}
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
         >
           {/* <Toolbar /> */}
           {Items.map((item, index) => (
