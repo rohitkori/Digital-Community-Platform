@@ -9,6 +9,7 @@ from app.serializers.questSerializers import (questCreationSerializer,
 
 from .. import schemas
 from datetime import datetime
+import app.router.search as search
 
 router = APIRouter()
 
@@ -136,3 +137,9 @@ async def reject_application(id: str, email: str):
     Quest.update_one(filter_query, update_operation)
 
     return {"message": "Application rejected successfully"}
+
+@router.post('/search', status_code=status.HTTP_200_OK)
+async def search_query(query: str):
+    search_list = search.search(query)
+
+    return search_list
