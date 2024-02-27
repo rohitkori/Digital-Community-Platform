@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,12 +15,14 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import LogoutIcon from "@mui/icons-material/Logout";
-import InterestsIcon from "@mui/icons-material/Interests";
 import MyProfile from "../components/Dashboard/MyProfile";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import HomeIcon from "@mui/icons-material/Home";
+import PersonIcon from "@mui/icons-material/Person";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -42,7 +44,7 @@ function TabPanel(props) {
 
 const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+  // const [isClosing, setIsClosing] = React.useState(false);
   const [tab, setTab] = useState(0);
   const [mode, setMode] = useState("light");
   const { user, logoutUser } = useContext(AuthContext);
@@ -72,7 +74,7 @@ const Dashboard = () => {
     {
       id: 1,
       text: "My Profile",
-      icon: <InterestsIcon className="text-[#A0A0A0]" />,
+      icon: <PersonIcon />,
       component: <MyProfile data={user} />,
     },
   ];
@@ -82,6 +84,26 @@ const Dashboard = () => {
       <Toolbar />
       <Divider />
       <List className="text-end">
+        <Link to="/" style={{ color: "black" }}>
+          <Box
+            sx={{
+              bgcolor: "background.paper",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: "auto",
+              width: "90%",
+              paddingLeft: "30px",
+              marginTop: "5px",
+              marginBottom: "5px",
+            }}
+          >
+            <IconButton className="gap-2">
+              <HomeIcon />
+            </IconButton>
+            <Tab label="Home" className="p-0"></Tab>
+          </Box>
+        </Link>
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -99,9 +121,9 @@ const Dashboard = () => {
 
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "left",
+                justifyContent: "space-between",
                 margin: "auto",
-                width: "100%",
+                width: "90%",
                 paddingLeft: "30px",
                 marginTop: "5px",
                 marginBottom: "5px",
@@ -118,26 +140,28 @@ const Dashboard = () => {
           ))}
         </Tabs>
       </List>
+      <Divider/>
       <List>
-        <ListItem disablePadding className="text-red-600">
-          <ListItemButton
-            onClick={logoutUser}
-            sx={{
-              bgcolor: "background.paper",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "left",
-              margin: "auto",
-              width: "100%",
-              paddingLeft: "30px",
-            }}
-          >
-            <IconButton>
-              <LogoutIcon />
-            </IconButton>
-            <ListItemText primary="Logout" className="p-0" />
-          </ListItemButton>
-        </ListItem>
+        {/* <ListItem disablePadding className="text-red-600"> */}
+        <ListItemButton
+          onClick={logoutUser}
+          sx={{
+            bgcolor: "background.paper",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            margin: "auto",
+            width: "90%",
+            paddingLeft: "30px",
+            color: "red",
+          }}
+        >
+          <IconButton >
+            <LogoutIcon sx={{color: "red"}}/>
+          </IconButton>
+          <ListItemText primary="Logout" style={{ textAlign: "end" }} />
+        </ListItemButton>
+        {/* </ListItem> */}
       </List>
     </div>
   );

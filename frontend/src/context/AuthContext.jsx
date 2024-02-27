@@ -2,12 +2,15 @@ import { useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BACKEND_URL } from "../config";
+import jwt_decode from "jwt-decode";
 
 const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const [suggestionQuest, setSuggestionQuest] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwt_decode(localStorage.getItem("authTokens"))
@@ -20,22 +23,24 @@ export const AuthProvider = ({ children }) => {
   );
 
   const registerUser = async (
-    firstName,
+    name,
     email,
     city,
     phone,
     dateOfBirth,
     specializations,
-    password
+    password,
+    passwordConfirm
   ) => {
     const registerData = {
-      firstName,
+      name,
       email,
       city,
       phone,
       dateOfBirth,
       specializations,
       password,
+      passwordConfirm,
     };
 
     const response = await fetch(`${API_BACKEND_URL}/api/auth/register`, {
@@ -56,6 +61,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const suggestionQuestFunc = async (email) => {
+    const response = await fetch(`${API_BACKEND_URL}/api/quest/suggestion?email=${email}`, {
+      method: "POST",
+      body: "",
+      header: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const questData = await response.json();
+    if (response.status === 200) {
+      // console.log(questData);
+      setSuggestionQuest(questData);
+    } else {
+      throw response.statusText;
+    }
+  };
   const loginUser = async (email, password) => {
     const loginData = {
       email,
@@ -71,14 +93,20 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await response.json();
-    if (response.status == 200) {
+    if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwt_decode(data.access));
+      setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
+
+      new Promise((resolve, reject) => {
+        suggestionQuestFunc(email)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
       navigate("./dashboard");
       return response;
-    } else if (response.status == 422) {
-      toast.error("Validation error");
     } else {
       throw response.statusText;
     }
@@ -88,7 +116,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    navigate("/register");
+    navigate("/login");
     toast.success("Logged out successfully!");
   };
 
@@ -96,14 +124,26 @@ export const AuthProvider = ({ children }) => {
     const decodeTokens = async () => {
       try {
         if (authTokens) {
-          setUser(jwt_decode(authTokens.access));
+          const jwt_decode_data = jwt_decode(authTokens.access_token);
+          // console.log(jwt_decode_data)
+          setUser(jwt_decode_data);
+          new Promise((resolve, reject) => {
+            suggestionQuestFunc(jwt_decode_data.sub.split(" : ")[1])
+              .then((res) => {
+                resolve(res);
+              })
+              .catch((err) => reject(err));
+          });
         }
-      } catch {
-        toast.error("Error decoding access token:", error);
+      } catch (e) {
+        console.log(e);
+        toast.error("Error decoding access token");
+      } finally {
+        setLoading(false);
       }
     };
     decodeTokens();
-  }, [authTokens]);
+  }, [authTokens, loading]);
 
   const authContextValue = {
     user,
@@ -112,11 +152,12 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    suggestionQuest,
   };
   return (
     <AuthContext.Provider value={authContextValue}>
-      {children}
+      {loading ? null : children}
     </AuthContext.Provider>
   );
 };

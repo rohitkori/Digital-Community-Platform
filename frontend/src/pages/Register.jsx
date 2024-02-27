@@ -42,7 +42,8 @@ const Register = () => {
           phone,
           dateOfBirth,
           specializations,
-          password
+          password,
+          confirmPassword
         )
           .then((res) => {
             resolve(res);
@@ -175,7 +176,7 @@ const Register = () => {
                 sx={{ justifyContent: "space-between" }}
               >
                 {option}
-                {selected ? specializations.push({ option }) : null}
+                {selected ? specializations.push( option ) : null}
                 {selected ? <CheckIcon color="info" /> : null}
               </MenuItem>
             </>

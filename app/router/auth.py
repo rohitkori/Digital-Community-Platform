@@ -98,7 +98,7 @@ def login(payload: schemas.LoginUserSchema, response: Response, Authorize: AuthJ
 
     # Create access token
     access_token = Authorize.create_access_token(
-        subject=str(user["id"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+        subject=str(user["id"] + ":" + user["email"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
 
     # Create refresh token
     refresh_token = Authorize.create_refresh_token(
