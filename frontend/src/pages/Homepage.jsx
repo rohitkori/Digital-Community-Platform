@@ -146,7 +146,7 @@ const Homepage = () => {
               previous income. With over 5years experience in Marketing &
               Business strategy, we are your best client.
             </Typography>
-            <Link to="/quest">
+            <Link to="/quests">
               <Button
                 variant="contained"
                 color="primary"

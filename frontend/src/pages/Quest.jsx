@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { Grid, Typography, Box } from "@mui/material";
 import QuestCard from "../components/QuestCard";
+import AuthContext from "../context/AuthContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -49,6 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Quest = () => {
+  const { suggestionQuest } = useContext(AuthContext);
   return (
     <Box marginTop="70px">
       <Grid item xs={12} md={7} textAlign="left" sx={{ flexGrow: 1 }}>
@@ -70,30 +73,14 @@ const Quest = () => {
           //   gap="20px"
           spacing={{ xs: 2, md: 3 }}
         >
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
-          <Grid item>
-            <QuestCard />
-          </Grid>
+          {/* {console.log(suggestionQuest)} */}
+          {suggestionQuest.map((quest, index) => {
+            return (
+              <Grid item key={index} xs>
+                <QuestCard data={quest}/>
+              </Grid>
+            );
+          })}
         </Grid>
       </Grid>
     </Box>

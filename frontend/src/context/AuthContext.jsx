@@ -9,6 +9,8 @@ export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const [suggestionQuest, setSuggestionQuest] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwt_decode(localStorage.getItem("authTokens"))
@@ -59,6 +61,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const suggestionQuestFunc = async (email) => {
+    const response = await fetch(`${API_BACKEND_URL}/api/quest/suggestion?email=${email}`, {
+      method: "POST",
+      body: "",
+      header: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const questData = await response.json();
+    if (response.status === 200) {
+      // console.log(questData);
+      setSuggestionQuest(questData);
+    } else {
+      throw response.statusText;
+    }
+  };
   const loginUser = async (email, password) => {
     const loginData = {
       email,
@@ -78,9 +97,17 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(data);
       setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
+
+      new Promise((resolve, reject) => {
+        suggestionQuestFunc(email)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
       navigate("./dashboard");
       return response;
-    }else {
+    } else {
       throw response.statusText;
     }
   };
@@ -89,7 +116,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    navigate("/register");
+    navigate("/login");
     toast.success("Logged out successfully!");
   };
 
@@ -97,15 +124,26 @@ export const AuthProvider = ({ children }) => {
     const decodeTokens = async () => {
       try {
         if (authTokens) {
-          setUser(jwt_decode(authTokens.access_token));
+          const jwt_decode_data = jwt_decode(authTokens.access_token);
+          // console.log(jwt_decode_data)
+          setUser(jwt_decode_data);
+          new Promise((resolve, reject) => {
+            suggestionQuestFunc(jwt_decode_data.sub.split(" : ")[1])
+              .then((res) => {
+                resolve(res);
+              })
+              .catch((err) => reject(err));
+          });
         }
-      } catch(e) {
-        console.log(e)
+      } catch (e) {
+        console.log(e);
         toast.error("Error decoding access token");
+      } finally {
+        setLoading(false);
       }
     };
     decodeTokens();
-  }, [authTokens]);
+  }, [authTokens, loading]);
 
   const authContextValue = {
     user,
@@ -114,11 +152,12 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    suggestionQuest,
   };
   return (
     <AuthContext.Provider value={authContextValue}>
-      {children}
+      {loading ? null : children}
     </AuthContext.Provider>
   );
 };
