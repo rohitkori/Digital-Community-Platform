@@ -149,6 +149,13 @@ def refresh_token(response: Response, Authorize: AuthJWT = Depends()):
                         ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')
     return {'access_token': access_token}
 
+
+@router.post('/user-details', status_code=status.HTTP_200_OK)
+async def get_user_details(user_id: str):
+    user = userResponseEntity(User.find_one({'_id': ObjectId(user_id)}))
+
+    return {"status": "success", "user": user}
+
 # [...] imports
 # [...] register user
 # [...] login user
