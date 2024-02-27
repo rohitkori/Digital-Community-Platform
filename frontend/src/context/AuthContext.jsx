@@ -2,6 +2,7 @@ import { useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BACKEND_URL } from "../config";
+import jwt_decode from "jwt-decode";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -20,22 +21,24 @@ export const AuthProvider = ({ children }) => {
   );
 
   const registerUser = async (
-    firstName,
+    name,
     email,
     city,
     phone,
     dateOfBirth,
     specializations,
-    password
+    password,
+    passwordConfirm
   ) => {
     const registerData = {
-      firstName,
+      name,
       email,
       city,
       phone,
       dateOfBirth,
       specializations,
       password,
+      passwordConfirm,
     };
 
     const response = await fetch(`${API_BACKEND_URL}/api/auth/register`, {
@@ -71,15 +74,13 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await response.json();
-    if (response.status == 200) {
+    if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwt_decode(data.access));
+      setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("./dashboard");
       return response;
-    } else if (response.status == 422) {
-      toast.error("Validation error");
-    } else {
+    }else {
       throw response.statusText;
     }
   };
@@ -96,10 +97,11 @@ export const AuthProvider = ({ children }) => {
     const decodeTokens = async () => {
       try {
         if (authTokens) {
-          setUser(jwt_decode(authTokens.access));
+          setUser(jwt_decode(authTokens.access_token));
         }
-      } catch {
-        toast.error("Error decoding access token:", error);
+      } catch(e) {
+        console.log(e)
+        toast.error("Error decoding access token");
       }
     };
     decodeTokens();
