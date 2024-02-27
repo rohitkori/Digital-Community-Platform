@@ -20,7 +20,7 @@ import MyProfile from "../components/Dashboard/MyProfile";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-// import AuthContext from "../contexts/AuthContext";
+import AuthContext from "../context/AuthContext";
 
 const drawerWidth = 240;
 
@@ -45,10 +45,8 @@ const Dashboard = () => {
   const [isClosing, setIsClosing] = React.useState(false);
   const [tab, setTab] = useState(0);
   const [mode, setMode] = useState("light");
-  // const { user, logoutUser } = useContext(AuthContext);
-  const user = {
-    name: "Yuvraj",
-  };
+  const { user, logoutUser } = useContext(AuthContext);
+
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
@@ -123,7 +121,7 @@ const Dashboard = () => {
       <List>
         <ListItem disablePadding className="text-red-600">
           <ListItemButton
-            // onClick={logoutUser}
+            onClick={logoutUser}
             sx={{
               bgcolor: "background.paper",
               display: "flex",
