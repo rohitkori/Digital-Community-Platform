@@ -16,6 +16,7 @@ nltk.download('stopwords')
 
 # Connect to MongoDB
 collection = Quest
+collection_user = User
 
 # Load stopwords
 custom_stopwords = set(stopwords.words("english"))
@@ -28,7 +29,7 @@ vectorizer = TfidfVectorizer(
     stop_words=list(custom_stopwords),  # Convert set to list
     min_df=0.05,  
     max_df=0.95, 
-    ngram_range=(1, 2) 
+    ngram_range=(1, 2)  
 )
 
 # Preprocess function to clean, tokenize, and stem text

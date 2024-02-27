@@ -10,6 +10,7 @@ from app.serializers.questSerializers import (questCreationSerializer,
 from .. import schemas
 from datetime import datetime
 import app.router.search as search
+import app.router.quest_suggestion as suggestion
 
 router = APIRouter()
 
@@ -143,3 +144,9 @@ async def search_query(query: str):
     search_list = search.search(query)
 
     return search_list
+
+@router.post('/suggestion', status_code=status.HTTP_200_OK)
+async def quest_suggestion_using_profile(email: str):
+    quest_suggestion_list = suggestion.quest_suggestion(email)
+
+    return quest_suggestion_list
