@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAsyncError, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BACKEND_URL } from "../config";
 import jwt_decode from "jwt-decode";
@@ -10,6 +10,7 @@ export default AuthContext;
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [suggestionQuest, setSuggestionQuest] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
@@ -62,13 +63,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const suggestionQuestFunc = async (email) => {
-    const response = await fetch(`${API_BACKEND_URL}/api/quest/suggestion?email=${email}`, {
-      method: "POST",
-      body: "",
-      header: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${API_BACKEND_URL}/api/quest/suggestion?email=${email}`,
+      {
+        method: "POST",
+        body: "",
+        header: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const questData = await response.json();
     if (response.status === 200) {
@@ -78,6 +82,27 @@ export const AuthProvider = ({ children }) => {
       throw response.statusText;
     }
   };
+
+  const getDetailFunc = async (userId) => {
+    const response = await fetch(
+      `${API_BACKEND_URL}/api/auth/user-details?user_id=${userId}`,
+      {
+        method: "POST",
+        body: "",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const userDetailData = await response.json();
+    if (response.status === 200) {
+      setUserDetails(userDetailData.user);
+    } else {
+      throw response.statusText;
+    }
+  };
+
   const loginUser = async (email, password) => {
     const loginData = {
       email,
@@ -95,11 +120,20 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
     if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwt_decode(data.access_token));
+      const jwt_decode_data = jwt_decode(data.access_token);
+      setUser(jwt_decode_data);
       localStorage.setItem("authTokens", JSON.stringify(data));
 
       new Promise((resolve, reject) => {
         suggestionQuestFunc(email)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
+
+      new Promise((resolve, reject) => {
+        getDetailFunc(jwt_decode_data.sub.split(" : ")[0])
           .then((res) => {
             resolve(res);
           })
@@ -134,6 +168,13 @@ export const AuthProvider = ({ children }) => {
               })
               .catch((err) => reject(err));
           });
+          new Promise((resolve, reject) => {
+            getDetailFunc(jwt_decode_data.sub.split(" : ")[0])
+              .then((res) => {
+                resolve(res);
+              })
+              .catch((err) => reject(err));
+          });
         }
       } catch (e) {
         console.log(e);
@@ -154,6 +195,7 @@ export const AuthProvider = ({ children }) => {
     loginUser,
     logoutUser,
     suggestionQuest,
+    userDetails,
   };
   return (
     <AuthContext.Provider value={authContextValue}>
