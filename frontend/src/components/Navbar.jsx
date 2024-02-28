@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,32 +11,34 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const drawerWidth = 240;
-const navItems = [
-  {
-    id: 1,
-    text: "Home",
-    link: "/",
-  },
-  {
-    id: 2,
-    text: "Quests",
-    link: "/quests",
-  },
-  {
-    id: 3,
-    text: "Dashboard",
-    link: "/dashboard",
-  },
-];
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { user } = React.useContext(AuthContext);
+
+  const navItems = [
+    {
+      id: 1,
+      text: "Home",
+      link: "/",
+    },
+    {
+      id: 2,
+      text: "Quests",
+      link: user ? "/quests" : "login",
+    },
+    {
+      id: 3,
+      text: user ? "Dashboard" : "Login",
+      link: user ? "/dashboard" : "/login",
+    },
+  ];
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -43,9 +46,9 @@ function Navbar() {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        LOGO
-      </Typography>
+      <Link to="/">
+        <AcUnitIcon />
+      </Link>
       <Divider />
       <List>
         {navItems.map((item) => (
@@ -75,17 +78,9 @@ function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              textAlign: "left",
-              display: { xs: "none", sm: "block" },
-            }}
-          >
-            LOGO
-          </Typography>
+          <Link to="/">
+            <AcUnitIcon fontSize="large" sx={{ color: "white" }} />
+          </Link>
           <Box
             sx={{
               flexGrow: 1,

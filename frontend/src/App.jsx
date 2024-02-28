@@ -5,6 +5,7 @@ import Register from "../src/pages/Register";
 import Login from "../src/pages/Login";
 import Navbar from "./components/Navbar";
 import Quest from "./pages/Quest";
+import RequestQuest from "./pages/RequestQuest";
 import PrivateRoute from "../src/context/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/quests" element={<Quest />} />
+            <Route path="/opening-request" element={<RequestQuest />} />
           </Routes>
           <PrivateRoute path="/dashboard" element={<Dashboard />} />
           <Toaster />

@@ -146,15 +146,26 @@ const Homepage = () => {
               previous income. With over 5years experience in Marketing &
               Business strategy, we are your best client.
             </Typography>
-            <Link to="/quests">
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ width: "200px", fontSize: "16px" }}
-              >
-                Search Quest
-              </Button>
-            </Link>
+            <Box sx={{display: "flex", gap: "20px"}}>
+              <Link to="/quests">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ width: "200px", fontSize: "16px" }}
+                >
+                  Search Quest
+                </Button>
+              </Link>
+              <Link to="/opening-request">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{ width: "200px", fontSize: "16px" }}
+                >
+                  Open Quest
+                </Button>
+              </Link>
+            </Box>
           </Grid>
           <Grid item xs={12} md={5}>
             <img
