@@ -98,11 +98,10 @@ const Quest = () => {
         <Grid
           container
           columns={{ xs: 4, sm: 8, md: 12 }}
-          //   gap="20px"
           spacing={{ xs: 2, md: 3 }}
         >
           {/* {console.log(suggestionQuest)} */}
-          {questData == ""
+          {questData === ""
             ? suggestionQuest.map((quest, index) => {
                 return (
                   <Grid item key={index} xs>

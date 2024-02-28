@@ -48,7 +48,7 @@ const QuestCard = ({ data }) => {
                 <List component="div" disablePadding>
                   {data.leisure_activity.split(" ").map((activity, index) => {
                     return (
-                      <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemButton key={index} sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <TourIcon />
                         </ListItemIcon>

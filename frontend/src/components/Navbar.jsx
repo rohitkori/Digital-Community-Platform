@@ -94,10 +94,8 @@ function Navbar() {
             }}
           >
             {navItems.map((item) => (
-              <Link to={item.link}>
-                <Button key={item.id} sx={{ color: "#fff" }}>
-                  {item.text}
-                </Button>
+              <Link key={item.id} to={item.link}>
+                <Button sx={{ color: "#fff" }}>{item.text}</Button>
               </Link>
             ))}
           </Box>

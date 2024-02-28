@@ -47,7 +47,7 @@ const Dashboard = () => {
   // const [isClosing, setIsClosing] = React.useState(false);
   const [tab, setTab] = useState(0);
   const [mode, setMode] = useState("light");
-  const { user, logoutUser } = useContext(AuthContext);
+  const { userDetails, logoutUser } = useContext(AuthContext);
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
@@ -75,7 +75,7 @@ const Dashboard = () => {
       id: 1,
       text: "My Profile",
       icon: <PersonIcon />,
-      component: <MyProfile data={user} />,
+      component: <MyProfile data={userDetails} />,
     },
   ];
 
