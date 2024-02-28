@@ -42,3 +42,19 @@ def questRequestListSerializer(requests) -> list:
 
 def questListSerializer(quests) -> list:
     return [questCreationSerializer(quest) for quest in quests]
+
+def questViewForUserSerializer(data) -> dict:
+    return {
+        "id": str(data["_id"]),
+        "title": data["title"],
+        "description": data["description"],
+        "start_date": data["start_date"],
+        "end_date": data["end_date"],
+        "city": data["city"],
+        "leisure_activity": data["leisure_activity"],
+        "local_events": data["local_events"],
+        "rewards": data["rewards"],
+        "points": data["points"],
+        "community_manager": data["community_manager"],
+        "total_required": data["total_required"],
+    }

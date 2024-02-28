@@ -83,3 +83,7 @@ class QuestResponseSchema(QuestCreationSchema):
 class QuestResponse(BaseModel):
     # status: str
     quest: QuestResponseSchema
+
+
+class UserEmailSchema(BaseModel):
+    email: str

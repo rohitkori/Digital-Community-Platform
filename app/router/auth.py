@@ -3,9 +3,10 @@ from bson.objectid import ObjectId
 from fastapi import APIRouter, Response, status, Depends, HTTPException
 
 from app import oauth2
-from app.database import User, CommunityManager
-from app.serializers.userSerializers import (userEntity, userResponseEntity, userListEntity, 
+from app.database import User, CommunityManager, Quest
+from app.serializers.userSerializers import (userEntity, userResponseEntity, userListEntity,
                                              communityManagerListEntity, communityManagerEntity, communityManagerResponseEntity)
+from app.serializers.questSerializers import questViewForUserSerializer
 from .. import schemas, utils
 from app.oauth2 import AuthJWT
 from ..config import settings
@@ -171,4 +172,81 @@ async def get_user_details(user_id: str):
 
 #     return {'status': 'success'}
 
+@router.post('/manager-login')
+def login(payload: schemas.LoginUserSchema, response: Response, Authorize: AuthJWT = Depends()):
+    # Check if the user exist
+    manager = CommunityManager.find_one({'email': payload.email.lower()})
+    if not manager:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='Incorrect Email or Password')
+    community_manager = communityManagerResponseEntity(manager)
 
+    # Check if the password is valid
+    if not utils.verify_password(payload.password, manager['password']):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='Incorrect Email or Password')
+
+    # Create access token
+    access_token = Authorize.create_access_token(
+        subject=str(community_manager["id"] + ":" + community_manager["email"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+
+    # Create refresh token
+    refresh_token = Authorize.create_refresh_token(
+        subject=str(community_manager["id"]), expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRES_IN))
+
+    # Store refresh and access tokens in cookie
+    response.set_cookie('access_token', access_token, ACCESS_TOKEN_EXPIRES_IN * 60,
+                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
+    response.set_cookie('refresh_token', refresh_token,
+                        REFRESH_TOKEN_EXPIRES_IN * 60, REFRESH_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
+    response.set_cookie('logged_in', 'True', ACCESS_TOKEN_EXPIRES_IN * 60,
+                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')
+
+    # Send both access
+    return {'status': 'success', 'access_token': access_token}
+
+@router.get('/manager-refresh-token')
+def refresh_token(response: Response, Authorize: AuthJWT = Depends()):
+    try:
+        Authorize.jwt_refresh_token_required()
+
+        manager_id = Authorize.get_jwt_subject()
+        if not manager_id:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail='Could not refresh access token')
+        manager = communityManagerResponseEntity(CommunityManager.find_one({'_id': ObjectId(str(manager_id))}))
+        if not manager:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail='The user belonging to this token no logger exist')
+        access_token = Authorize.create_access_token(
+            subject=str(manager["id"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+    except Exception as e:
+        error = e.__class__.__name__
+        if error == 'MissingTokenError':
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail='Please provide refresh token')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+
+    response.set_cookie('access_token', access_token, ACCESS_TOKEN_EXPIRES_IN * 60,
+                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
+    response.set_cookie('logged_in', 'True', ACCESS_TOKEN_EXPIRES_IN * 60,
+                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')
+    return {'access_token': access_token}
+
+@router.post('/manager-details', status_code=status.HTTP_200_OK)
+async def get_manager_details(manager_id: str):
+    manager = communityManagerResponseEntity(CommunityManager.find_one({'_id': ObjectId(manager_id)}))
+
+    return {"status": "success", "manager": manager}
+
+@router.post('/applications', status_code=status.HTTP_200_OK)
+async def get_applications(payload: schemas.UserEmailSchema):
+    user = User.find_one({'email': payload.email.lower()})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    pending_applications = questViewForUserSerializer(Quest.find({'pending_applications': user['email']}))
+    accepted_applications = questViewForUserSerializer(Quest.find({'accepted_applications': user['email']}))
+    rejected_applications = questViewForUserSerializer(Quest.find({'rejected_applications': user['email']}))
+
+    return {"pending_applications": pending_applications, "accepted_applications": accepted_applications, "rejected_applications": rejected_applications}
