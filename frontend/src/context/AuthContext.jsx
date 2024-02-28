@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
+  const [isCommunityManager, setCommunityManager] = useState(false);
 
   const registerUser = async (
     name,
@@ -154,6 +155,51 @@ export const AuthProvider = ({ children }) => {
     toast.success("Logged out successfully!");
   };
 
+  const loginManager = async (email, password) => {
+    const loginData = {
+      email,
+      password,
+    };
+
+    const response = await fetch(`${API_BACKEND_URL}/api/auth/manager-login`, {
+      method: "POST",
+      body: JSON.stringify(loginData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (response.status === 200) {
+      setAuthTokens(data);
+      const jwt_decode_data = jwt_decode(data.access_token);
+      setUser(jwt_decode_data);
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      setCommunityManager(true);
+
+      new Promise((resolve, reject) => {
+        suggestionQuestFunc(email)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
+
+      new Promise((resolve, reject) => {
+        getDetailFunc(jwt_decode_data.sub.split(":")[0])
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
+      navigate("./dashboard");
+      return response;
+    } else {
+      throw response.statusText;
+    }
+  };
+
+
   useEffect(() => {
     const decodeTokens = async () => {
       try {
@@ -196,6 +242,8 @@ export const AuthProvider = ({ children }) => {
     logoutUser,
     suggestionQuest,
     userDetails,
+    isCommunityManager,
+    loginManager
   };
   return (
     <AuthContext.Provider value={authContextValue}>

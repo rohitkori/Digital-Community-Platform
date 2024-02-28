@@ -3,6 +3,7 @@ import Homepage from "../src/pages/Homepage";
 import Dashboard from "../src/pages/Dashboard";
 import Register from "../src/pages/Register";
 import Login from "../src/pages/Login";
+import LoginManager from "./pages/ManagerLogin";
 import Navbar from "./components/Navbar";
 import Quest from "./pages/Quest";
 import RequestQuest from "./pages/RequestQuest";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/login-manager" element={<LoginManager />} />
             <Route path="/quests" element={<Quest />} />
             <Route path="/opening-request" element={<RequestQuest />} />
           </Routes>
