@@ -85,24 +85,30 @@ const Dashboard = () => {
       <Divider />
       <List className="text-end">
         <Link to="/" style={{ color: "black" }}>
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              margin: "auto",
-              width: "90%",
-              paddingLeft: "30px",
-              marginTop: "5px",
-              marginBottom: "5px",
-            }}
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            aria-label="Vertical tabs example"
           >
-            <IconButton className="gap-2">
-              <HomeIcon />
-            </IconButton>
-            <Tab label="Home" className="p-0"></Tab>
-          </Box>
+            <Box
+              sx={{
+                bgcolor: "background.paper",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "auto",
+                width: "90%",
+                paddingLeft: "30px",
+                marginTop: "5px",
+                marginBottom: "5px",
+              }}
+            >
+              <IconButton className="gap-2">
+                <HomeIcon />
+              </IconButton>
+              <Tab label="Home" className="p-0" />
+            </Box>
+          </Tabs>
         </Link>
         <Tabs
           orientation="vertical"
@@ -140,7 +146,7 @@ const Dashboard = () => {
           ))}
         </Tabs>
       </List>
-      <Divider/>
+      <Divider />
       <List>
         {/* <ListItem disablePadding className="text-red-600"> */}
         <ListItemButton
@@ -156,8 +162,8 @@ const Dashboard = () => {
             color: "red",
           }}
         >
-          <IconButton >
-            <LogoutIcon sx={{color: "red"}}/>
+          <IconButton>
+            <LogoutIcon sx={{ color: "red" }} />
           </IconButton>
           <ListItemText primary="Logout" style={{ textAlign: "end" }} />
         </ListItemButton>

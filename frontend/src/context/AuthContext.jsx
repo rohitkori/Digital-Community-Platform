@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       new Promise((resolve, reject) => {
-        getDetailFunc(jwt_decode_data.sub.split(" : ")[0])
+        getDetailFunc(jwt_decode_data.sub.split(":")[0])
           .then((res) => {
             resolve(res);
           })
@@ -162,14 +162,14 @@ export const AuthProvider = ({ children }) => {
           // console.log(jwt_decode_data)
           setUser(jwt_decode_data);
           new Promise((resolve, reject) => {
-            suggestionQuestFunc(jwt_decode_data.sub.split(" : ")[1])
+            suggestionQuestFunc(jwt_decode_data.sub.split(":")[1])
               .then((res) => {
                 resolve(res);
               })
               .catch((err) => reject(err));
           });
           new Promise((resolve, reject) => {
-            getDetailFunc(jwt_decode_data.sub.split(" : ")[0])
+            getDetailFunc(jwt_decode_data.sub.split(":")[0])
               .then((res) => {
                 resolve(res);
               })

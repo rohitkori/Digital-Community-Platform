@@ -6,6 +6,7 @@ import {
   Stack,
   Autocomplete,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CheckIcon from "@mui/icons-material/Check";
@@ -97,7 +98,15 @@ const Register = () => {
 
   return (
     <ThemeProvider theme={createTheme(theme)}>
-      <h2>Register Form</h2>
+      <Typography
+        variant="h4"
+        color="initial"
+        gutterBottom
+        style={{ marginTop: "70px" }}
+      >
+        Register Form
+      </Typography>
+      {/* <h2 style={{ marginTop: "50px" }}></h2> */}
       <form onSubmit={handleSubmit} action={<Link to="/login" />}>
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
           <TextField
@@ -176,7 +185,7 @@ const Register = () => {
                 sx={{ justifyContent: "space-between" }}
               >
                 {option}
-                {selected ? specializations.push( option ) : null}
+                {selected ? specializations.push(option) : null}
                 {selected ? <CheckIcon color="info" /> : null}
               </MenuItem>
             </>
@@ -189,6 +198,9 @@ const Register = () => {
           label="Date of Birth"
           onChange={(e) => setDateOfBirth(e.target.value)}
           value={dateOfBirth}
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           required
           sx={{ mb: 4 }}
