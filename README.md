@@ -34,7 +34,7 @@
     >- Apply additional transformations to handle special cases or exceptions.
     >- Return the resulting word buffer as the stemmed word.
 
-## Search Execution Flow
+### Search Execution Flow
 
 ```mermaid
 graph TD
@@ -63,6 +63,33 @@ graph TD
 >- **User Search**:
    >    - ****Function****: `search`
    >    - ****Task****: Combines the preprocessing of the user query and the cosine similarity calculation to find and return relevant quests based on the user's search query.
+
+
+## Quest Recommendations Based on User Profile
+
+Upon logging into the quest page, users are promptly provided with quest recommendations tailored to their areas of specialization.
+
+```mermaid
+
+graph LR
+    Start((Start)) --> Retrieve_User
+    Retrieve_User --> Extract_Specializations
+    Extract_Specializations --> Construct_Query
+    Construct_Query --> Search_Quests
+    Search_Quests --> End((End))
+
+    subgraph Process
+        Retrieve_User --> Extract_Specializations
+        Extract_Specializations --> Construct_Query
+        Construct_Query --> Search_Quests
+        Search_Quests --> End
+    end
+
+    style Start fill:#4CAF50,stroke:#333,stroke-width:2px;
+    style End fill:#4CAF50,stroke:#333,stroke-width:2px;
+
+```
+
 
 ## Installation Guide (Backend)
 
