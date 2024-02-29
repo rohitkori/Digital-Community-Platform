@@ -13,10 +13,10 @@
 
     > #### Mathematical Formula
     > The cosine similarity between two vectors $\mathbf{a}$ and $\mathbf{b}$ is computed using the dot product formula:
-    > $$\text{cosine similarity}(\mathbf{a}, \mathbf{b}) = \frac{\mathbf{a} \cdot \mathbf{b}}{\|\mathbf{a}\| \|\mathbf{b}\|}$$ 
+    > $$\text{cosine similarity}(\mathbf{a}, \mathbf{b}) = \frac{\mathbf{a} \cdot \mathbf{b}}{\||\mathbf{a}\|| \||\mathbf{b}\||}$$ 
     >   where:
     >   - ${\mathbf{a} \cdot \mathbf{b}}$ represents the dot product of vectors $\mathbf{a}$  and $\mathbf{b}$ ,
-    >   - ${\|\mathbf{a}\| \ and \ \|\mathbf{b}\|}$ denote the Euclidean norms of vectors $\mathbf{a}$ and $\mathbf{b}$, respectively.
+    >   - ${\||\mathbf{a}\|| \ and \ \||\mathbf{b}\||}$ denote the Euclidean norms of vectors $\mathbf{a}$ and $\mathbf{b}$, respectively.
     > #### Interpretation
     > The cosine similarity formula calculates the cosine of the angle between the two vectors, resulting in a value ranging from -1 to 1. Here's how to interpret the results:
     >- A cosine similarity value close to 1 indicates a high degree of similarity between the vectors.
