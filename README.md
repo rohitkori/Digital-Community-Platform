@@ -90,20 +90,20 @@ graph LR
 
 ```
 >- **Retrieving User Document**:
-    >   - ****Function****: `get_user_document`
-    >   - ****Task****: Retrieves the user document from the MongoDB collection based on the provided email identifier.
+ >    - ****Function****: `get_user_document`
+ >    - ****Task****: Retrieves the user document from the MongoDB collection based on the provided email identifier.
 >- **Extracting Specializations**:
-    >   - ****Function****: `extract_specializations`
-    >   - ****Task****: Extracts the specializations from the retrieved user document, if available.
+ >   - ****Function****: `extract_specializations`
+ >   - ****Task****: Extracts the specializations from the retrieved user document, if available.
 >- **Constructing Query from Specializations**:
-    >   - ****Function****: `construct_query_from_specializations`
-    >   - ****Task****: Constructs a query string using the extracted specializations to search for relevant quests.
+ >   - ****Function****: `construct_query_from_specializations`
+ >   - ****Task****: Constructs a query string using the extracted specializations to search for relevant quests.
 >- **Searching for Relevant Quests**:
-    >   - ****Function****: `search_quests_by_specializations`
-    >   - ****Task****: Searches for quests related to the user's specializations using the constructed query string.
+ >   - ****Function****: `search_quests_by_specializations`
+ >   - ****Task****: Searches for quests related to the user's specializations using the constructed query string.
 >- **Quest Suggestion**:    
-    >   - ****Function****: `quest_suggestion`
-    >   - ****Task****: Executes the entire process of retrieving user specializations, constructing a query, and searching for relevant quests, providing quest suggestions based on the user's profile.
+ >   - ****Function****: `quest_suggestion`
+ >   - ****Task****: Executes the entire process of retrieving user specializations, constructing a query, and searching for relevant quests, providing quest suggestions based on the user's profile.
 
 ## Installation Guide (Backend)
 
