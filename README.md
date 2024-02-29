@@ -45,6 +45,25 @@ graph TD
     J --> K[Search Function Execution]
 ```
 
+>- **TF-IDF Vectorizer Setup**:
+   >    - ****Function****: `TfidfVectorizer`
+   >    - ****Task****: Initializes the TF-IDF vectorizer with specified parameters.
+>- **Preprocessing Quest Data**:
+   >    - ****Function****: `preprocess`
+   >    - ****Task****: Cleans, tokenizes, and stems the text data of each quest retrieved from the MongoDB collection.
+>- **Vectorizing Quest Descriptions**:
+   >    - ****Function****: `TfidfVectorizer.fit_transform`
+   >    - ****Task****: Transforms the concatenated descriptions of processed quests into TF-IDF vectors.
+>- **Processing User Query**:
+   >    - ****Function****: `process_query`
+   >    - ****Task****: Preprocesses the user's search query to make it compatible for cosine similarity calculation.
+>- **Calculating Cosine Similarity**:
+   >    - ****Function****: `cosine_similarity`
+   >    - ****Task****: Computes the cosine similarity between the preprocessed user query vector and the TF-IDF vectors of the processed quests.
+>- **User Search**:
+   >    - ****Function****: `search`
+   >    - ****Task****: Combines the preprocessing of the user query and the cosine similarity calculation to find and return relevant quests based on the user's search query.
+
 ## Installation Guide (Backend)
 
 - Create a virtual environment
