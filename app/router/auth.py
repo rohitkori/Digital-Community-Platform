@@ -99,7 +99,7 @@ def login(payload: schemas.LoginUserSchema, response: Response, Authorize: AuthJ
 
     # Create access token
     access_token = Authorize.create_access_token(
-        subject=str(user["id"] + ":" + user["email"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+        subject=str(user["id"] + ":" + user["email"] + ":" + "user"), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
 
     # Create refresh token
     refresh_token = Authorize.create_refresh_token(
@@ -188,7 +188,7 @@ def login(payload: schemas.LoginUserSchema, response: Response, Authorize: AuthJ
 
     # Create access token
     access_token = Authorize.create_access_token(
-        subject=str(community_manager["id"] + ":" + community_manager["email"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+        subject=str(community_manager["id"] + ":" + community_manager["email"]+ ":" + "manager"), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
 
     # Create refresh token
     refresh_token = Authorize.create_refresh_token(
@@ -240,13 +240,3 @@ async def get_manager_details(manager_id: str):
 
     return {"status": "success", "manager": manager}
 
-@router.post('/applications', status_code=status.HTTP_200_OK)
-async def get_applications(payload: schemas.UserEmailSchema):
-    user = User.find_one({'email': payload.email.lower()})
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
-    pending_applications = questViewForUserSerializer(Quest.find({'pending_applications': user['email']}))
-    accepted_applications = questViewForUserSerializer(Quest.find({'accepted_applications': user['email']}))
-    rejected_applications = questViewForUserSerializer(Quest.find({'rejected_applications': user['email']}))
-
-    return {"pending_applications": pending_applications, "accepted_applications": accepted_applications, "rejected_applications": rejected_applications}
