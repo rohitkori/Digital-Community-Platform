@@ -38,11 +38,20 @@
 
 ```mermaid
 graph TD
-    F[Preprocess Quests] --> G[Vectorize Quest Descriptions]
-    G --> H[Process User Query]
-    H --> I[Calculate Cosine Similarity]
-    I --> J[User Search Function]
-    J --> K[Search Function Execution]
+    A[Retrieve User Document] --> B[Extract Specializations]
+    B --> C[Construct Query from Specializations]
+    C --> D[Search Quests by Specializations]
+    D --> E[End]
+
+    subgraph Process
+        A --> B
+        B --> C
+        C --> D
+        D --> E
+    end
+
+    style A fill:#4CAF50,stroke:#333,stroke-width:2px;
+    style E fill:#4CAF50,stroke:#333,stroke-width:2px;
 ```
 
 >- **TF-IDF Vectorizer Setup**:
@@ -71,8 +80,7 @@ Upon logging into the quest page, users are promptly provided with quest recomme
 
 ```mermaid
 
-graph LR
-    Start((Start)) --> Retrieve_User
+graph TD
     Retrieve_User --> Extract_Specializations
     Extract_Specializations --> Construct_Query
     Construct_Query --> Search_Quests
@@ -84,8 +92,7 @@ graph LR
         Construct_Query --> Search_Quests
         Search_Quests --> End
     end
-
-    style Start fill:#4CAF50,stroke:#333,stroke-width:2px;
+    style Retrieve_User fill:#4CAF50,stroke:#333,stroke-width:2px;
     style End fill:#4CAF50,stroke:#333,stroke-width:2px;
 
 ```
