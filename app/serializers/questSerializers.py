@@ -58,3 +58,6 @@ def questViewForUserSerializer(data) -> dict:
         "community_manager": data["community_manager"],
         "total_required": data["total_required"],
     }
+
+def questViewForUserListSerializer(quests) -> list:
+    return [questViewForUserSerializer(quest) for quest in quests]

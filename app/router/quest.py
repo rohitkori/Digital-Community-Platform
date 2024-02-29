@@ -4,8 +4,8 @@ from bson.objectid import ObjectId
 
 from app.database import CommunityManager, User, Quest
 from app.serializers.userSerializers import (communityManagerListEntity, communityManagerResponseEntity)
-from app.serializers.questSerializers import (questCreationSerializer, 
-                                              questRequestListSerializer , questListSerializer)
+from app.serializers.questSerializers import (questCreationSerializer, questViewForUserSerializer,
+                                              questRequestListSerializer , questListSerializer, questViewForUserListSerializer)
 
 from .. import schemas
 from datetime import datetime
@@ -23,6 +23,7 @@ async def create_quest_opening_request(payload: schemas.QuestRequestSchema):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Community Manager not found')
 
     application = payload.dict()
+    application['status'] = 'pending'
     filter_query = {"city": payload.city}
     update_operation = {
         "$push": {
@@ -42,7 +43,7 @@ async def get_quest_opening_requests(email: str):
     return {"status": "success", "requests": list_requests}
 
 @router.post('/create-quest', status_code=status.HTTP_201_CREATED, response_model=schemas.QuestResponse)
-async def create_quest(payload: schemas.QuestCreationSchema, email: str):
+async def create_quest(payload: schemas.QuestCreationSchema, email: str, application_id: str):
     community_manager = CommunityManager.find_one({'email': email.lower()})
     if not community_manager:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Community Manager not found')
@@ -53,6 +54,7 @@ async def create_quest(payload: schemas.QuestCreationSchema, email: str):
     result = Quest.insert_one(payload.dict())
     print(result.inserted_id)
     new_quest = questCreationSerializer(Quest.find_one({'_id': result.inserted_id}))
+    community_manager.update_one({'quest_openning_applications._id': ObjectId(application_id)}, {'$set': {'quest_openning_applications.$.status': 'accepted'}})
 
     return {"status": "success", "quest": new_quest}
 
@@ -150,3 +152,50 @@ async def quest_suggestion_using_profile(email: str):
     quest_suggestion_list = suggestion.quest_suggestion(email)
 
     return quest_suggestion_list
+
+@router.post('/user-applications', status_code=status.HTTP_200_OK)
+async def get_applications(payload: schemas.UserEmailSchema):
+    user = User.find_one({'email': payload.email.lower()})
+    # print(user)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+
+    pending_applications = questViewForUserListSerializer(Quest.find({'accepted_applications': user['email']}))
+    # print(pending_applications)
+    accepted_applications = questViewForUserListSerializer(Quest.find({'accepted_applications': user['email']}))
+    rejected_applications = questViewForUserListSerializer(Quest.find({'rejected_applications': user['email']}))
+
+    return {"pending_applications": pending_applications, "accepted_applications": accepted_applications, "rejected_applications": rejected_applications}
+
+@router.post('/community-manager-quests', status_code=status.HTTP_200_OK)
+async def get_community_manager_quests(payload: schemas.UserEmailSchema):
+    community_manager = CommunityManager.find_one({'email': payload.email.lower()})
+    if not community_manager:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Community Manager not found')
+    
+    quests = questListSerializer(Quest.find({'community_manager': community_manager['email']}))
+
+    return {"status": "success", "quests": quests}
+
+@router.post('/user-quest-request', status_code=status.HTTP_200_OK)
+async def get_user_quest_requests(payload: schemas.UserEmailSchema):
+    user = User.find_one({'email': payload.email.lower()})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    
+    quests = questRequestListSerializer(CommunityManager.find({'quest_openning_applications': {'$elemMatch': {'email': user['email']}}}))
+    pending_request = []
+    accepted_request = []
+    rejected_request = []
+    for quest in quests:
+        if quest['status'] == 'pending':
+            pending_request.append(quest)
+        elif quest['status'] == 'accepted':
+            accepted_request.append(quest)
+        else:   
+            rejected_request.append(quest)
+
+    print(quests)
+    
+    return {"status": "success", "pending_request": pending_request, "accepted_request": accepted_request, "rejected_request": rejected_request}
+    
