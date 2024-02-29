@@ -157,7 +157,7 @@ const RequestQuest = () => {
             type="number"
             variant="outlined"
             color="secondary"
-            label="Total point required"
+            label="Total people required"
             onChange={(e) => setTotalRequired(e.target.value)}
             value={totalRequired}
             InputProps={{ inputProps: { min: 0 } }}
