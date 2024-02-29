@@ -41,6 +41,7 @@ def preprocess(text):
 # Retrieve and preprocess quests
 processed_quests = []
 for quest in collection.find():
+    quest_id = str(quest['_id'])
     processed_title = preprocess(quest['title'])
     processed_description = preprocess(quest['description'])
     processed_reward = quest['rewards']  # No need to preprocess reward
@@ -48,6 +49,7 @@ for quest in collection.find():
     processed_leisure_activity = preprocess(" ".join(quest['leisure_activity']))
     
     processed_quests.append({
+        'quest_id': quest_id,
         'title': processed_title,
         'description': processed_description,
         'reward': processed_reward,
