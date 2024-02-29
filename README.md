@@ -29,8 +29,8 @@
     > #### Pseudo Algorithm
     >- Initialize a word buffer to store the input word.
     >- Apply a series of suffix removal rules to the word buffer until no further changes occur.
-        >   - If the word matches a suffix pattern, remove the suffix.
-        >   - Repeat this process for each applicable suffix rule.
+     >   - If the word matches a suffix pattern, remove the suffix.
+     >   - Repeat this process for each applicable suffix rule.
     >- Apply additional transformations to handle special cases or exceptions.
     >- Return the resulting word buffer as the stemmed word.
 
