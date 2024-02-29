@@ -13,7 +13,7 @@
 
     > #### Mathematical Formula
     > The cosine similarity between two vectors $\mathbf{a}$ and $\mathbf{b}$ is computed using the dot product formula:
-    > $$\text{cosine\_similarity}(\mathbf{a}, \mathbf{b}) = \frac{\mathbf{a} \cdot \mathbf{b}}{\|\mathbf{a}\| \|\mathbf{b}\|}$$ 
+    > $$\text{cosine similarity}(\mathbf{a}, \mathbf{b}) = \frac{\mathbf{a} \cdot \mathbf{b}}{\|\mathbf{a}\| \|\mathbf{b}\|}$$ 
     >   where:
     >   - ${\mathbf{a} \cdot \mathbf{b}}$ represents the dot product of vectors $\mathbf{a}$  and $\mathbf{b}$ ,
     >   - ${\|\mathbf{a}\| \ and \ \|\mathbf{b}\|}$ denote the Euclidean norms of vectors $\mathbf{a}$ and $\mathbf{b}$, respectively.
@@ -34,14 +34,15 @@
     >- Apply additional transformations to handle special cases or exceptions.
     >- Return the resulting word buffer as the stemmed word.
 
-## Flowchart
+## Search Execution Flow
 
 ```mermaid
-  graph TD;
-      A-->B;
-      A-->C;
-      B-->D;
-      C-->D;
+graph TD
+    F[Preprocess Quests] --> G[Vectorize Quest Descriptions]
+    G --> H[Process User Query]
+    H --> I[Calculate Cosine Similarity]
+    I --> J[User Search Function]
+    J --> K[Search Function Execution]
 ```
 
 ## Installation Guide (Backend)
